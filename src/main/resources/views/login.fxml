@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import java.lang.String?>
+<?import javafx.collections.FXCollections?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ChoiceBox?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.VBox?>
+
+<VBox alignment="CENTER" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity"
+      prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/8.0.91" xmlns:fx="http://javafx.com/fxml/1"
+      fx:controller="sample.controllers.Login">
+    <children>
+        <ChoiceBox fx:id="uzytkownik" prefWidth="150.0"/>
+        <TextField fx:id="haslo"/>
+        <Button fx:id="zaloguj" mnemonicParsing="false" onAction="#sprawdzHaslo" text="Zaloguj"/>
+    </children>
+</VBox>
