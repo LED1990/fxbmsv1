@@ -11,7 +11,7 @@
 <?import javafx.scene.layout.Pane?>
 <?import javafx.scene.layout.VBox?>
 
-<Pane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="319.0" xmlns="http://javafx.com/javafx/8.0.112" xmlns:fx="http://javafx.com/fxml/1" fx:controller="sample.controllers.DeveloperView">
+<Pane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="319.0" xmlns="http://javafx.com/javafx/8.0.121" xmlns:fx="http://javafx.com/fxml/1" fx:controller="sample.controllers.DeveloperView">
     <VBox prefHeight="1000.0" prefWidth="286.0">
         <children>
             <HBox prefHeight="100.0" prefWidth="200.0">
@@ -34,12 +34,12 @@
             </HBox>
             <VBox fx:id="kontenerPoziom" prefHeight="200.0" prefWidth="100.0">
                 <children>
-               <Label text="Wybierz poziom do edycji" />
-               <ChoiceBox fx:id="wybierzPoziom" prefWidth="150.0" />
+                    <Label text="Wybierz poziom do edycji" />
+                    <ChoiceBox fx:id="wybierzPoziom" prefWidth="150.0" />
                     <Label text="nazwa poziomu" />
                     <TextField fx:id="nazwaPoziomu" promptText="wprowadź nazwę" />
-               <Button fx:id="dodajUrzadzenie" mnemonicParsing="false" text="Dodaj urządzenie" />
-               <Button fx:id="dodajPlan" mnemonicParsing="false" text="Dodaj plan poziomu" />
+                    <Button fx:id="dodajUrzadzenie" mnemonicParsing="false" text="Dodaj urządzenie" />
+                    <Button fx:id="dodajPlan" mnemonicParsing="false" text="Dodaj plan poziomu" />
                 </children>
             </VBox>
         </children>

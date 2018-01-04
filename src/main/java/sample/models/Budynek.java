@@ -10,7 +10,6 @@ import java.util.Map;
 public class Budynek {
 
     //mapa poziomow reprezentowana przez numer i nazwe
-    private List<String> poziomy;
     private List<Poziom> listaPoziomy;
 
     private static Budynek ourInstance = new Budynek();
@@ -20,14 +19,6 @@ public class Budynek {
     }
 
     private Budynek() {
-    }
-
-    public List<String> getPoziomy() {
-        return poziomy;
-    }
-
-    public void setPoziomy(List<String> poziomy) {
-        this.poziomy = poziomy;
     }
 
     public List<Poziom> getListaPoziomy() {

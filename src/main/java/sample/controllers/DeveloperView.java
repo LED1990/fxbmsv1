@@ -2,14 +2,24 @@ package sample.controllers;
 
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.ChoiceBox;
 import javafx.scene.control.TextField;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
+import javafx.scene.input.ClipboardContent;
+import javafx.scene.input.Dragboard;
+import javafx.scene.input.MouseEvent;
+import javafx.scene.input.TransferMode;
 import javafx.scene.layout.VBox;
 import sample.models.Budynek;
 import sample.models.Poziom;
 
+import javax.imageio.ImageIO;
+import java.awt.image.BufferedImage;
+import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
@@ -29,6 +39,8 @@ public class DeveloperView implements Initializable {
     private ChoiceBox wybierzPoziom;
     @FXML
     private TextField nazwaPoziomu;
+    @FXML
+    private ImageView testImage;
 
     private int tempPoziom; //zmienna do okreslenia czy liczba poziomow sie zwiekszyla czy zmniejszyla
     private ObservableList observableListaPoziomow;
@@ -39,7 +51,6 @@ public class DeveloperView implements Initializable {
         kontenerPoziom.setVisible(iloscPoziomow.getValue() != null);//ukrywanie edycji poziomów az do wybrania ilosci poziomow
         incjalizacjaListyPoziomow();//oraz inicjalizacja pola pola wyboru poziomu
         edycjaNazwyPoziomu();
-
     }
 
     private void incjalizacjaListyPoziomow() {
@@ -105,7 +116,7 @@ public class DeveloperView implements Initializable {
                 int poziomDoEdycji = Budynek.getInstance().getListaPoziomy().indexOf(Budynek.getInstance().getListaPoziomy().stream().filter(o -> o.getNazwa().equals(wybierzPoziom.getValue())).findFirst().get());
                 Budynek.getInstance().getListaPoziomy().stream().filter(o -> o.getNazwa().equals(wybierzPoziom.getValue())).findFirst().get().setNazwa(nazwaPoziomu.getText());//update nazwy poziomy w obiekcie klasy Poziom
                 observableListaPoziomow.set(poziomDoEdycji, nazwaPoziomu.getText());//update nazw poziomow do edycji
-                wybierzPoziom.setValue(nazwaPoziomu.getText());//update nazwy w polu wybory edytowanego poziomu
+                wybierzPoziom.setValue(nazwaPoziomu.getText());//update nazwy w polu wyboru edytowanego poziomu
 //                for (Poziom x : Budynek.getInstance().getListaPoziomy()) {
 //                    LOGGER.info("------- nazwy poziomow: " + x.getNazwa());
 //                }
