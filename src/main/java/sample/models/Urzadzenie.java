@@ -10,15 +10,17 @@ import java.util.Map;
 public abstract class Urzadzenie {
     private int id;
     private int port;
+    private String nazwa;
     private BaudRate baudrate;
     private Map<String, Float> listaZmiennych;
 
     public Urzadzenie() {
     }
 
-    public Urzadzenie(int id, int port, BaudRate baudrate, Map<String, Float> listaZmiennych) {
+    public Urzadzenie(int id, int port, String nazwa, BaudRate baudrate, Map<String, Float> listaZmiennych) {
         this.id = id;
         this.port = port;
+        this.nazwa = nazwa;
         this.baudrate = baudrate;
         this.listaZmiennych = listaZmiennych;
     }
@@ -53,5 +55,13 @@ public abstract class Urzadzenie {
 
     public void setListaZmiennych(Map<String, Float> listaZmiennych) {
         this.listaZmiennych = listaZmiennych;
+    }
+
+    public String getNazwa() {
+        return nazwa;
+    }
+
+    public void setNazwa(String nazwa) {
+        this.nazwa = nazwa;
     }
 }

@@ -24,9 +24,7 @@ public class MainView implements Initializable {
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-        LOGGER.info("czy jest null?: "+developerController);
-        LOGGER.info("czy jest null?: "+menuController);
-        LOGGER.info("czy dziala przekazanie wartosci: "+developerController.getTempPoziom());
+        LOGGER.info("main view metoda initialize");
     }
 
 }

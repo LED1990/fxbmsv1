@@ -14,7 +14,7 @@ public class PompaCiepla extends Urzadzenie {
     public PompaCiepla() {
     }
 
-    public PompaCiepla(int id, int port, BaudRate baudrate, Map<String, Float> listaZmiennych) {
-        super(id, port, baudrate, listaZmiennych);
+    public PompaCiepla(int id, int port, BaudRate baudrate, Map<String, Float> listaZmiennych, String nazwa) {
+        super(id, port, nazwa, baudrate, listaZmiennych);
     }
 }
