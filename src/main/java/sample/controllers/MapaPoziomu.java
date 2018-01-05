@@ -8,8 +8,11 @@ import javafx.scene.control.TabPane;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
+import javafx.scene.paint.ImagePattern;
+import javafx.scene.shape.Rectangle;
 import sample.models.Budynek;
 import sample.models.Poziom;
+import sample.utils.DragResize;
 
 import java.net.URL;
 import java.util.ResourceBundle;
@@ -43,10 +46,10 @@ public class MapaPoziomu implements Initializable {
                             //aktualizacja nazw poziomow
                             tabPanePoziomy.getTabs().get(count).setText(p.getNazwa());
                             //aktualizacja map poziomow
-                            tabPanePoziomy.getTabs().get(count).setContent(uaktualnijMapePoziomu(p.getMapaPoziomu()));
+                            tabPanePoziomy.getTabs().get(count).setContent(wygenerujMape(p.getMapaPoziomu()));
                         } else {
                             //dodawanie nowych poziomow
-                            tabPanePoziomy.getTabs().add(generujZakladkiPoziomow(p.getNazwa(),p.getMapaPoziomu()));
+                            tabPanePoziomy.getTabs().add(generujZakladkiPoziomow(p.getNazwa(), p.getMapaPoziomu()));
                         }
                         count++;
                     }
@@ -58,7 +61,7 @@ public class MapaPoziomu implements Initializable {
                             //aktualizacja nazw poziomow
                             t.setText(Budynek.getInstance().getListaPoziomy().get(index).getNazwa());
                             //aktualizacja map poziomow
-                            t.setContent(uaktualnijMapePoziomu(Budynek.getInstance().getListaPoziomy().get(index).getMapaPoziomu()));
+                            t.setContent(wygenerujMape(Budynek.getInstance().getListaPoziomy().get(index).getMapaPoziomu()));
                             index++;
                         }
                     } else {
@@ -67,7 +70,7 @@ public class MapaPoziomu implements Initializable {
                             //sama aktualizacja nazw poziomów
                             tabPanePoziomy.getTabs().get(index).setText(p.getNazwa());
                             //aktualizacja map poziomow
-                            tabPanePoziomy.getTabs().get(index).setContent(uaktualnijMapePoziomu(p.getMapaPoziomu()));
+                            tabPanePoziomy.getTabs().get(index).setContent(wygenerujMape(p.getMapaPoziomu()));
                             index++;
                         }
                     }
@@ -78,12 +81,25 @@ public class MapaPoziomu implements Initializable {
 
     private Tab generujZakladkiPoziomow(String nazwaPoziomu, Image image) {
         Tab poziom = new Tab();
-        ImageView imageView =new ImageView(image);
-        poziom.setContent(imageView);
+        Rectangle rectangle = wygenerujMape(image);
+        if (image != null) {
+            rectangle.setFill(new ImagePattern(image));
+            poziom.setContent(rectangle);
+        }
         poziom.setText(nazwaPoziomu);
         return poziom;
     }
-    private ImageView uaktualnijMapePoziomu(Image image){
-        return new ImageView(image);
+
+    private Rectangle wygenerujMape(Image image) {
+        Rectangle rectangle = new Rectangle();
+        //TODO to bedzie trzeba inaczej rozwiazac - automatyczne wypelnianie ekranu itp
+        rectangle.setHeight(100);
+        rectangle.setWidth(100);
+        DragResize.makeResizable(rectangle, null);
+        if (image != null) {
+            rectangle.setFill(new ImagePattern(image));
+            return rectangle;
+        }
+        return null;
     }
 }
