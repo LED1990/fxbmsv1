@@ -80,6 +80,7 @@ public class MapaPoziomu implements Initializable {
     }
 
     private Tab generujZakladkiPoziomow(String nazwaPoziomu, Image image) {
+        //generowanie zakladek z nazwami poziomow na glownym widoku
         Tab poziom = new Tab();
         Rectangle rectangle = wygenerujMape(image);
         if (image != null) {
@@ -91,6 +92,7 @@ public class MapaPoziomu implements Initializable {
     }
 
     private Rectangle wygenerujMape(Image image) {
+        //generowanie prostokąta ktory mozna zmieniac przy p omocy myszki
         Rectangle rectangle = new Rectangle();
         //TODO to bedzie trzeba inaczej rozwiazac - automatyczne wypelnianie ekranu itp
         rectangle.setHeight(100);
