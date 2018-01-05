@@ -9,14 +9,11 @@ import javafx.scene.control.Button;
 import javafx.scene.control.ChoiceBox;
 import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
-import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.VBox;
 import javafx.stage.FileChooser;
-import javafx.stage.Stage;
 import sample.models.Budynek;
 import sample.models.Poziom;
-import sun.rmi.runtime.Log;
 
 import java.io.File;
 import java.net.URL;
@@ -113,7 +110,7 @@ public class DeveloperView implements Initializable {
                 dodajPlan.setDisable(false);//odblokowanie przycisku dodawania mapy poziomu
 //                LOGGER.info("zmieniono poziom do edycji ==============================" + wybierzPoziom.getValue());
                 nazwaPoziomu.setText(Budynek.getInstance().getListaPoziomy().stream().filter(o -> o.getNazwa().equals(wybierzPoziom.getValue())).findFirst().get().getNazwa());
-            }else {
+            } else {
                 dodajPlan.setDisable(true);//b9lokada przycisku jezeli nie ma wybranego poziomu do edycji
             }
         });
@@ -132,25 +129,22 @@ public class DeveloperView implements Initializable {
     }
 
     private void dodajPlanPoziomu() {
-        dodajPlan.addEventHandler(MouseEvent.MOUSE_CLICKED, new EventHandler<MouseEvent>() {
-            @Override
-            public void handle(MouseEvent event) {
-                LOGGER.info("wcisnieto dodaj poziom");
+        dodajPlan.addEventHandler(MouseEvent.MOUSE_CLICKED, event -> {
+            LOGGER.info("wcisnieto dodaj poziom");
 
-                FileChooser fileChooser = new FileChooser();
-                //dodanie blokady rozszerzen do wyboru plikow
-                FileChooser.ExtensionFilter extFilterJPG = new FileChooser.ExtensionFilter("JPG files (*.jpg)", "*.JPG");
-                FileChooser.ExtensionFilter extFilterPNG = new FileChooser.ExtensionFilter("PNG files (*.png)", "*.PNG");
-                fileChooser.getExtensionFilters().addAll(extFilterJPG, extFilterPNG);
-                fileChooser.setTitle("Wybierz mapę poziomu");
-                File mapaPoziomuFile = fileChooser.showOpenDialog(null);
+            FileChooser fileChooser = new FileChooser();
+            //dodanie blokady rozszerzen do wyboru plikow
+            FileChooser.ExtensionFilter extFilterJPG = new FileChooser.ExtensionFilter("JPG files (*.jpg)", "*.JPG");
+            FileChooser.ExtensionFilter extFilterPNG = new FileChooser.ExtensionFilter("PNG files (*.png)", "*.PNG");
+            fileChooser.getExtensionFilters().addAll(extFilterJPG, extFilterPNG);
+            fileChooser.setTitle("Wybierz mapę poziomu");
+            File mapaPoziomuFile = fileChooser.showOpenDialog(null);
 
-                if (mapaPoziomuFile != null) {
-                    Image image = new Image(mapaPoziomuFile.toURI().toString());
+            if (mapaPoziomuFile != null) {
+                Image image = new Image(mapaPoziomuFile.toURI().toString());
 //                    ImageView iv = new ImageView(image);
-                    Budynek.getInstance().getListaPoziomy().stream().filter(o -> o.getNazwa().equals(wybierzPoziom.getValue())).findFirst().get().setMapaPoziomu(image);
+                Budynek.getInstance().getListaPoziomy().stream().filter(o -> o.getNazwa().equals(wybierzPoziom.getValue())).findFirst().get().setMapaPoziomu(image);
 //                    testImage.setImage(Budynek.getInstance().getListaPoziomy().stream().filter(o -> o.getNazwa().equals(wybierzPoziom.getValue())).findFirst().get().getMapaPoziomu());
-                }
             }
         });
     }
