@@ -1,6 +1,8 @@
 package sample.models;
 
-import java.awt.*;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
+
 import java.util.List;
 
 public class Poziom {

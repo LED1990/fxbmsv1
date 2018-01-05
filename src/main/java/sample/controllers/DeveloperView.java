@@ -5,21 +5,20 @@ import javafx.collections.ObservableList;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.scene.control.Button;
 import javafx.scene.control.ChoiceBox;
 import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
-import javafx.scene.input.ClipboardContent;
-import javafx.scene.input.Dragboard;
 import javafx.scene.input.MouseEvent;
-import javafx.scene.input.TransferMode;
 import javafx.scene.layout.VBox;
+import javafx.stage.FileChooser;
+import javafx.stage.Stage;
 import sample.models.Budynek;
 import sample.models.Poziom;
+import sun.rmi.runtime.Log;
 
-import javax.imageio.ImageIO;
-import java.awt.image.BufferedImage;
-import java.io.IOException;
+import java.io.File;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
@@ -40,7 +39,10 @@ public class DeveloperView implements Initializable {
     @FXML
     private TextField nazwaPoziomu;
     @FXML
-    private ImageView testImage;
+    private Button dodajPlan;
+
+//    @FXML
+//    ImageView testImage;
 
     private int tempPoziom; //zmienna do okreslenia czy liczba poziomow sie zwiekszyla czy zmniejszyla
     private ObservableList observableListaPoziomow;
@@ -51,6 +53,8 @@ public class DeveloperView implements Initializable {
         kontenerPoziom.setVisible(iloscPoziomow.getValue() != null);//ukrywanie edycji poziomów az do wybrania ilosci poziomow
         incjalizacjaListyPoziomow();//oraz inicjalizacja pola pola wyboru poziomu
         edycjaNazwyPoziomu();
+        dodajPlanPoziomu();
+        dodajPlan.setDisable(true);//blokada przycisku jezeli nie ma wybranego poziomu do edycji
     }
 
     private void incjalizacjaListyPoziomow() {
@@ -106,8 +110,11 @@ public class DeveloperView implements Initializable {
         wybierzPoziom.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
             //wyswietlanie danych o aktualnym poziomie
             if (wybierzPoziom.getValue() != null) {
+                dodajPlan.setDisable(false);//odblokowanie przycisku dodawania mapy poziomu
 //                LOGGER.info("zmieniono poziom do edycji ==============================" + wybierzPoziom.getValue());
                 nazwaPoziomu.setText(Budynek.getInstance().getListaPoziomy().stream().filter(o -> o.getNazwa().equals(wybierzPoziom.getValue())).findFirst().get().getNazwa());
+            }else {
+                dodajPlan.setDisable(true);//b9lokada przycisku jezeli nie ma wybranego poziomu do edycji
             }
         });
         //dodanie focusa do pola edycji nazwy poziomu
@@ -123,6 +130,31 @@ public class DeveloperView implements Initializable {
             }
         });
     }
+
+    private void dodajPlanPoziomu() {
+        dodajPlan.addEventHandler(MouseEvent.MOUSE_CLICKED, new EventHandler<MouseEvent>() {
+            @Override
+            public void handle(MouseEvent event) {
+                LOGGER.info("wcisnieto dodaj poziom");
+
+                FileChooser fileChooser = new FileChooser();
+                //dodanie blokady rozszerzen do wyboru plikow
+                FileChooser.ExtensionFilter extFilterJPG = new FileChooser.ExtensionFilter("JPG files (*.jpg)", "*.JPG");
+                FileChooser.ExtensionFilter extFilterPNG = new FileChooser.ExtensionFilter("PNG files (*.png)", "*.PNG");
+                fileChooser.getExtensionFilters().addAll(extFilterJPG, extFilterPNG);
+                fileChooser.setTitle("Wybierz mapę poziomu");
+                File mapaPoziomuFile = fileChooser.showOpenDialog(null);
+
+                if (mapaPoziomuFile != null) {
+                    Image image = new Image(mapaPoziomuFile.toURI().toString());
+//                    ImageView iv = new ImageView(image);
+                    Budynek.getInstance().getListaPoziomy().stream().filter(o -> o.getNazwa().equals(wybierzPoziom.getValue())).findFirst().get().setMapaPoziomu(image);
+//                    testImage.setImage(Budynek.getInstance().getListaPoziomy().stream().filter(o -> o.getNazwa().equals(wybierzPoziom.getValue())).findFirst().get().getMapaPoziomu());
+                }
+            }
+        });
+    }
+
 
     public int getTempPoziom() {
         return tempPoziom;

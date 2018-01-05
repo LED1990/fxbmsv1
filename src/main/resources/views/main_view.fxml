@@ -1,24 +1,24 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <?language JavaScript?>
-
+<?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.control.Tab?>
+<?import javafx.scene.control.TabPane?>
+<?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.BorderPane?>
-<?import javafx.scene.layout.Pane?>
-<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="600.0"
-            prefWidth="1100.0" xmlns="http://javafx.com/javafx/8.0.91" xmlns:fx="http://javafx.com/fxml/1"
-            fx:controller="sample.controllers.MainView">
+
+<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="600.0" prefWidth="1100.0" xmlns="http://javafx.com/javafx/8.0.121" xmlns:fx="http://javafx.com/fxml/1" fx:controller="sample.controllers.MainView">
     <!--=================================================================================== GŁÓOWNY WIDOK (środek) ================================================================-->
     <center>
-        <Pane nodeOrientation="LEFT_TO_RIGHT" prefHeight="200.0" prefWidth="200.0" BorderPane.alignment="CENTER">
-        </Pane>
+        <fx:include fx:id="poziom" source="mapa_poziomu_view.fxml"/>
     </center>
     <!--=================================================================================== MENU DLA DEVELOPERA (prawa strona) ================================================================-->
     <right>
-        <fx:include fx:id="developer" source="developer_view.fxml"/>
+        <fx:include fx:id="developer" source="developer_view.fxml" />
     </right>
     <!--=================================================================================== MENU APLIKACJI (lewa strona) ================================================================-->
     <left>
-        <fx:include fx:id="menu" source="menu_view.fxml"/>
+        <fx:include fx:id="menu" source="menu_view.fxml" />
     </left>
 
 </BorderPane>
