@@ -6,7 +6,7 @@
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.BorderPane?>
 
-<AnchorPane prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/8.0.121" xmlns:fx="http://javafx.com/fxml/1" fx:controller="sample.controllers.MapaPoziomu">
+<AnchorPane prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/8.0.91" xmlns:fx="http://javafx.com/fxml/1" fx:controller="sample.controllers.MapaPoziomu">
    <Button fx:id="generujMenu" mnemonicParsing="false" text="Generuj widok" />
     <ScrollPane fx:id="scrollPane" hbarPolicy="AS_NEEDED" layoutX="2.0" layoutY="32.0" nodeOrientation="LEFT_TO_RIGHT" prefHeight="245.0" prefWidth="447.0" vbarPolicy="AS_NEEDED" BorderPane.alignment="CENTER">
         <content>

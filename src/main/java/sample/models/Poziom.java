@@ -1,11 +1,15 @@
 package sample.models;
 
 import javafx.scene.image.Image;
-import javafx.scene.image.ImageView;
+import lombok.AllArgsConstructor;
+import lombok.Data;
 
 import java.util.List;
 
+@AllArgsConstructor
+@Data
 public class Poziom {
+    private int id;
     private String nazwa;
     private List<Urzadzenie> listaUrzadzen;
     private Image mapaPoziomu;
@@ -13,37 +17,10 @@ public class Poziom {
     public Poziom() {
     }
 
-    public Poziom(String nazwa) {
+    public Poziom(String nazwa, int id) {
         this.nazwa = nazwa;
+        this.id = id;
     }
 
-    public Poziom(String nazwa, List<Urzadzenie> urzadzenia, Image mapaPoziomu) {
-        this.nazwa = nazwa;
-        this.listaUrzadzen = urzadzenia;
-        this.mapaPoziomu = mapaPoziomu;
-    }
 
-    public String getNazwa() {
-        return nazwa;
-    }
-
-    public void setNazwa(String nazwa) {
-        this.nazwa = nazwa;
-    }
-
-    public List<Urzadzenie> getListaUrzadzen() {
-        return listaUrzadzen;
-    }
-
-    public void setListaUrzadzen(List<Urzadzenie> listaUrzadzen) {
-        this.listaUrzadzen = listaUrzadzen;
-    }
-
-    public Image getMapaPoziomu() {
-        return mapaPoziomu;
-    }
-
-    public void setMapaPoziomu(Image mapaPoziomu) {
-        this.mapaPoziomu = mapaPoziomu;
-    }
 }

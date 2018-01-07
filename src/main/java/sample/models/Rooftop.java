@@ -1,6 +1,7 @@
 package sample.models;
 
 import sample.constans.BaudRate;
+import sample.constans.TypUrzadzenia;
 
 import java.util.Map;
 
@@ -11,7 +12,8 @@ public class Rooftop extends Urzadzenie {
     public Rooftop() {
     }
 
-    public Rooftop(int id, int port, BaudRate baudrate, Map<String, Float> listaZmiennych, String nazwa) {
-        super(id, port, nazwa, baudrate, listaZmiennych);
+
+    public Rooftop(int id, int portUrzadzenia, String nazwaUrzadzenia, TypUrzadzenia typUrzadzenia) {
+        super(id, portUrzadzenia, nazwaUrzadzenia, typUrzadzenia);
     }
 }
