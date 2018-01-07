@@ -19,7 +19,6 @@ import sample.models.Urzadzenie;
 import sample.utils.UtilPoziom;
 import sample.utils.UtilUrzadzenia;
 
-import javax.rmi.CORBA.Util;
 import java.io.File;
 import java.net.URL;
 import java.util.ArrayList;
@@ -221,8 +220,8 @@ public class DeveloperView implements Initializable {
                 String nazwaUrzadzenia = editNazwaUrzadzenia.getText();
                 int portUrzadzenia = Integer.parseInt(editPort.getText());//TODO: jezeli to pole zostaje puste aplikacja sie wyjebie
                 //dodanie nowego urzadzenia do listy
-                Urzadzenie urzadzenie =  UtilUrzadzenia.utworzUrzadzenie(id, portUrzadzenia, nazwaUrzadzenia, (TypUrzadzenia) wyborTypUrzadzenia.getValue());//utworzenie nowego urzadzenia
-                UtilPoziom.dodajUrzadzenieNaPoziomie(urzadzenie,wybierzPoziom);
+                Urzadzenie urzadzenie = UtilUrzadzenia.utworzUrzadzenie(id, portUrzadzenia, nazwaUrzadzenia, (TypUrzadzenia) wyborTypUrzadzenia.getValue());//utworzenie nowego urzadzenia
+                UtilPoziom.dodajUrzadzenieNaPoziomie(urzadzenie, wybierzPoziom);
 //                UtilPoziom.wyswietlWszytskieUrzadzeniaNaPoziomie(wybierzPoziom);
             }
         });
