@@ -21,7 +21,7 @@
                 <children>
                     <!--ILOSC POZIOMOW-->
                     <Label text="Wybierz ilość poziomów"/>
-                    <ChoiceBox fx:id="iloscPoziomow" prefWidth="150.0">
+                    <ChoiceBox fx:id="choiceBoxIloscPoziomow" prefWidth="150.0">
                         <items>
                             <FXCollections fx:factory="observableArrayList">
                                 <Integer fx:value="1"/>
@@ -37,10 +37,10 @@
             <VBox fx:id="kontenerPoziom" prefHeight="356.0" prefWidth="286.0">
                 <children>
                     <Label text="Wybierz poziom do edycji"/>
-                    <ChoiceBox fx:id="wybierzPoziom" prefWidth="150.0"/>
+                    <ChoiceBox fx:id="choiceBoxwybierzPoziom" prefWidth="150.0"/>
                     <Label text="nazwa poziomu"/>
-                    <TextField fx:id="nazwaPoziomu" promptText="wprowadź nazwę"/>
-                    <Button fx:id="dodajPlan" mnemonicParsing="false" text="Dodaj plan poziomu"/>
+                    <TextField fx:id="textFieldnazwaPoziomu" promptText="wprowadź nazwę"/>
+                    <Button fx:id="przyciskDodajPlan" mnemonicParsing="false" text="Dodaj plan poziomu"/>
                     <HBox>
                         <children>
                             <Button fx:id="przyciskDodajUrzadzenie" mnemonicParsing="false" text="Dodaj urządzenie"/>
@@ -51,28 +51,28 @@
                         <content>
                             <VBox>
                                 <children>
-                                    <HBox fx:id="wyborUrzadzeniaDoEdycji">
+                                    <HBox fx:id="kontenerWyborUrzadzeniaDoEdycji">
                                         <children>
                                             <Label text="Edytuj urządzenie"/>
-                                            <ChoiceBox fx:id="edytujUrzadzenie" prefWidth="150.0"/>
+                                            <ChoiceBox fx:id="choiceBoxEdytujUrzadzenie" prefWidth="150.0"/>
                                         </children>
                                     </HBox>
                                     <HBox>
                                         <children>
                                             <Label text="Nazwa urządzenia"/>
-                                            <TextField fx:id="editNazwaUrzadzenia" promptText="nazwa"/>
+                                            <TextField fx:id="textFieldNazwaUrzadzenia" promptText="nazwa"/>
                                         </children>
                                     </HBox>
                                     <HBox>
                                         <children>
                                             <Label text="Port"/>
-                                            <TextField fx:id="editPort" promptText="port"/>
+                                            <TextField fx:id="textFieldEditPort" promptText="port"/>
                                         </children>
                                     </HBox>
                                     <HBox>
                                         <children>
                                             <Label text="Typ urządzenia"/>
-                                            <ChoiceBox fx:id="wyborTypUrzadzenia" prefWidth="150.0"/>
+                                            <ChoiceBox fx:id="choiceBoxwyborTypUrzadzenia" prefWidth="150.0"/>
                                         </children>
                                     </HBox>
                                     <HBox>

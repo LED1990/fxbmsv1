@@ -4,6 +4,7 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.scene.Node;
 import javafx.scene.control.Button;
 import javafx.scene.control.ChoiceBox;
 import javafx.scene.control.TextField;
@@ -14,8 +15,8 @@ import javafx.scene.layout.VBox;
 import javafx.stage.FileChooser;
 import sample.constans.TypUrzadzenia;
 import sample.models.Budynek;
-import sample.models.Poziom;
 import sample.models.Urzadzenie;
+import sample.utils.UtilBudynek;
 import sample.utils.UtilPoziom;
 import sample.utils.UtilUrzadzenia;
 
@@ -32,133 +33,128 @@ import java.util.logging.Logger;
 public class DeveloperView implements Initializable {
     private static final Logger LOGGER = Logger.getLogger(DeveloperView.class.getName());
     @FXML
-    private ChoiceBox iloscPoziomow;
+    private ChoiceBox choiceBoxIloscPoziomow;
     @FXML
     private VBox kontenerPoziom; //kontener w ktorym są opcje dotyczące poziomu
     @FXML
-    private ChoiceBox wybierzPoziom;
+    private ChoiceBox choiceBoxwybierzPoziom;
     @FXML
-    private TextField nazwaPoziomu;
+    private TextField textFieldnazwaPoziomu;
     @FXML
-    private Button dodajPlan;
+    private Button przyciskDodajPlan;
     @FXML
     private Button przyciskDodajUrzadzenie;
     @FXML
-    private ChoiceBox edytujUrzadzenie;
+    private ChoiceBox choiceBoxEdytujUrzadzenie;
     @FXML
     private Button przyciskEdytujUrzadzenie;
     @FXML
-    private HBox wyborUrzadzeniaDoEdycji;
+    private HBox kontenerWyborUrzadzeniaDoEdycji;
     @FXML
-    private TextField editNazwaUrzadzenia;
+    private TextField textFieldNazwaUrzadzenia;
     @FXML
-    private TextField editPort;
+    private TextField textFieldEditPort;
     @FXML
-    private ChoiceBox wyborTypUrzadzenia;
+    private ChoiceBox choiceBoxwyborTypUrzadzenia;
     @FXML
     private Button przyciskZapisz;
 
-    private int tempPoziom; //zmienna do okreslenia czy liczba poziomow sie zwiekszyla czy zmniejszyla
     private ObservableList observableListaPoziomow;
     private boolean flagaDodajEdytujUrzadzenie;//flaga do wykrywania czy wcisnieto dodaj czy edytuj urzadzenie true-dodaj false-edytuj
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-//        LOGGER.info("aktualna wartość ilosci poziomów: " + iloscPoziomow.getValue());
-        kontenerPoziom.setVisible(iloscPoziomow.getValue() != null);//ukrywanie edycji poziomów az do wybrania ilosci poziomow
-        incjalizacjaListyPoziomow();//oraz inicjalizacja pola pola wyboru poziomu
-        inicjalizacjaEdycjaNazwyPoziomu();
+//        LOGGER.info("aktualna wartość ilosci poziomów: " + choiceBoxIloscPoziomow.getValue());
+        kontenerPoziom.setVisible(choiceBoxIloscPoziomow.getValue() != null);//ukrywanie edycji poziomów az do wybrania ilosci poziomow
+        inicjalizacjaListyPoziomow();//oraz inicjalizacja pola pola wyboru poziomu
+        inicjalizacjaWyborPoziomu();
+        inicjalizacjaPolaEdycjiNazwyPoziomu();
         inicjalizacjaPrzyciskuDodaniaPlanuPoziomu();
         inicjalizacjaEdycjiUrzadzenia();
         inicjalizacjaPrzyciskDoodajUrzadzenie();
         inicjalizacjaWyboruTypuUrzadzenia();
         inicjalizacjaPrzyciskZapisz();
-        dodajPlan.setDisable(true);//blokada przycisku jezeli nie ma wybranego poziomu do edycji
-        przyciskDodajUrzadzenie.setDisable(true);//blokada dodawania urzadzenia jezeli poziom nie jest wybrany
-        przyciskEdytujUrzadzenie.setDisable(true);//blokada edycji urzadzen jezeli poziom nie jest wybrany
+        zablokujElement(przyciskDodajPlan);//blokada przycisku jezeli nie ma wybranego poziomu do edycji
+        zablokujElement(przyciskDodajUrzadzenie);//blokada dodawania urzadzenia jezeli poziom nie jest wybrany
+        zablokujElement(przyciskEdytujUrzadzenie);//blokada edycji urzadzen jezeli poziom nie jest wybrany
+        ukryjElement(kontenerWyborUrzadzeniaDoEdycji);//ukrycie okna wyboru urzadzenia do edycji
         flagaDodajEdytujUrzadzenie = true;
-        wyborUrzadzeniaDoEdycji.setVisible(false);//ukrycie okna wyboru urzadzenia do edycji
     }
 
-    private void incjalizacjaListyPoziomow() {
-        tempPoziom = 0;
-        //dodanie listenera ktory sprawdza czy zostala wprowadzona liczba poziomow
-        iloscPoziomow.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
-            kontenerPoziom.setVisible(iloscPoziomow.getValue() != null);//pokazanie okna edycji poziomow
-            if (tempPoziom == 0) {
-                //pierwszy raz wprowadzono ilosc poziomow
-                List<Poziom> tempListaPoziomow = new ArrayList<>();
-                for (int i = 0; i < Integer.parseInt(iloscPoziomow.getValue().toString()); i++) {
-                    tempListaPoziomow.add(new Poziom("Poziom " + i, i + 1));
+    private void zablokujElement(Node element) {
+        element.setDisable(true);
+    }
+
+    private void odblokujElement(Node element) {
+        element.setDisable(false);
+    }
+
+    private void ukryjElement(Node element) {
+        element.setVisible(false);
+    }
+
+    private void pokazElement(Node element) {
+        element.setVisible(true);
+    }
+
+    /**
+     * inicjalizacja Choice boxa który służy do wyboru poziomu który ma być edytowany
+     */
+    private void inicjalizacjaWyborPoziomu() {
+        choiceBoxwybierzPoziom.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
+            if (choiceBoxwybierzPoziom.getValue() != null) {
+                odblokujElement(przyciskDodajPlan);//odblokowanie przycisku dodawania mapy poziomu
+                odblokujElement(przyciskDodajUrzadzenie);//odblokowanie przycisku dodawania urzadzenia
+                if (UtilPoziom.sprawdzCzyPoziomMaUrzadzenia(choiceBoxwybierzPoziom)) {
+                    odblokujElement(przyciskEdytujUrzadzenie);
+                } else {
+                    zablokujElement(przyciskEdytujUrzadzenie);
                 }
-                Budynek.getInstance().setListaPoziomy(tempListaPoziomow);
-                tempPoziom = Integer.parseInt(iloscPoziomow.getValue().toString());//aktualna liczba poziomow
+                textFieldnazwaPoziomu.setText(Budynek.getInstance().getListaPoziomy().stream().filter(o -> o.getNazwa().equals(choiceBoxwybierzPoziom.getValue())).findFirst().get().getNazwa());
             } else {
-                //obsluga zmniejszania i zwiekszania liczby poziomow
-                if (tempPoziom < Integer.parseInt(iloscPoziomow.getValue().toString())) {
-                    //liczba poziomow zostala zwiekszona
-                    int iter = Budynek.getInstance().getListaPoziomy().size();
-                    int iloscIteracji = Budynek.getInstance().getListaPoziomy().size() + (Integer.parseInt(iloscPoziomow.getValue().toString()) - tempPoziom);
-                    int i = iter;
-                    while (i < iloscIteracji) {
-                        Budynek.getInstance().getListaPoziomy().add(new Poziom("Poziom " + i, i + 1));
-                        i++;
-                    }
-                    tempPoziom = Budynek.getInstance().getListaPoziomy().size();
-                }
-                if (tempPoziom > Integer.parseInt(iloscPoziomow.getValue().toString())) {
-                    //zmniejszono liczbe poziomow
-                    int iter = Budynek.getInstance().getListaPoziomy().size();
-                    int iloscIteracji = Budynek.getInstance().getListaPoziomy().size() - (tempPoziom - Integer.parseInt(iloscPoziomow.getValue().toString()));
-                    int i = iter;
-                    while (i > iloscIteracji) {
-                        Budynek.getInstance().getListaPoziomy().remove(i - 1);
-                        i--;
-                    }
-                    tempPoziom = Budynek.getInstance().getListaPoziomy().size();
-                }
+                zablokujElement(przyciskDodajPlan);//blokada przycisku jezeli nie ma wybranego poziomu do edycji
+                zablokujElement(przyciskDodajUrzadzenie);
             }
-            //wygenerowanie pola wyboru poziomu do edycji
-            List<String> nazwyPoziomow = new ArrayList<>();
-            for (Poziom x : Budynek.getInstance().getListaPoziomy()) {
-                nazwyPoziomow.add(x.getNazwa());
-            }
-            observableListaPoziomow = FXCollections.observableArrayList(nazwyPoziomow);
-            wybierzPoziom.setItems(observableListaPoziomow);
         });
     }
 
-    private void inicjalizacjaEdycjaNazwyPoziomu() {
-        //dodany listener który sprawdza czy zostal wybrany inny poziom do edycji
-        wybierzPoziom.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
-            //wyswietlanie danych o aktualnym poziomie
-            if (wybierzPoziom.getValue() != null) {
-                dodajPlan.setDisable(false);//odblokowanie przycisku dodawania mapy poziomu
-                przyciskDodajUrzadzenie.setDisable(false);//odblokowanie przycisku dodawania urzadzenia
-                sprawdzCzyPoziomMaUrzadzenia();//
-//                LOGGER.info("zmieniono poziom do edycji ==============================" + wybierzPoziom.getValue());
-                nazwaPoziomu.setText(Budynek.getInstance().getListaPoziomy().stream().filter(o -> o.getNazwa().equals(wybierzPoziom.getValue())).findFirst().get().getNazwa());
-            } else {
-                dodajPlan.setDisable(true);//b9lokada przycisku jezeli nie ma wybranego poziomu do edycji
-                przyciskDodajUrzadzenie.setDisable(true);
-            }
-        });
+    /**
+     * pole edycji nazwy poziomu, gdy zostanie zmieniona jego wartosc i utraci fokus, zostanie uaktualniona nazwa w polu wyboru poziomu do edycji
+     */
+    private void inicjalizacjaPolaEdycjiNazwyPoziomu() {
         //dodanie focusa do pola edycji nazwy poziomu
-        nazwaPoziomu.focusedProperty().addListener((observable1, oldValue1, newValue1) -> {
+        textFieldnazwaPoziomu.focusedProperty().addListener((observable1, oldValue1, newValue1) -> {
             if (oldValue1) {
-                int poziomDoEdycji = Budynek.getInstance().getListaPoziomy().indexOf(Budynek.getInstance().getListaPoziomy().stream().filter(o -> o.getNazwa().equals(wybierzPoziom.getValue())).findFirst().get());
-                Budynek.getInstance().getListaPoziomy().stream().filter(o -> o.getNazwa().equals(wybierzPoziom.getValue())).findFirst().get().setNazwa(nazwaPoziomu.getText());//update nazwy poziomy w obiekcie klasy Poziom
-                observableListaPoziomow.set(poziomDoEdycji, nazwaPoziomu.getText());//update nazw poziomow do edycji
-                wybierzPoziom.setValue(nazwaPoziomu.getText());//update nazwy w polu wyboru edytowanego poziomu
-//                for (Poziom x : Budynek.getInstance().getListaPoziomy()) {
-//                    LOGGER.info("------- nazwy poziomow: " + x.getNazwa());
-//                }
+                int poziomDoEdycji = Budynek.getInstance().getListaPoziomy().indexOf(Budynek.getInstance().getListaPoziomy().stream().filter(o -> o.getNazwa().equals(choiceBoxwybierzPoziom.getValue())).findFirst().get());
+                Budynek.getInstance().getListaPoziomy().stream().filter(o -> o.getNazwa().equals(choiceBoxwybierzPoziom.getValue())).findFirst().get().setNazwa(textFieldnazwaPoziomu.getText());//update nazwy poziomy w obiekcie klasy Poziom
+                observableListaPoziomow.set(poziomDoEdycji, textFieldnazwaPoziomu.getText());//update nazw poziomow do edycji
+                choiceBoxwybierzPoziom.setValue(textFieldnazwaPoziomu.getText());//update nazwy w polu wyboru edytowanego poziomu
             }
         });
     }
+
+    /**
+     * inicjalizacja choiceboxa który służy określenia liczby poziomów w budynku
+     */
+    private void inicjalizacjaListyPoziomow() {
+        //dodanie listenera ktory sprawdza czy zmieniona liczba poziomow
+        choiceBoxIloscPoziomow.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
+            kontenerPoziom.setVisible(choiceBoxIloscPoziomow.getValue() != null);//pokazanie okna edycji poziomow
+            int liczbaPoziomowBudynku = Budynek.getInstance().getLiczbaPoziomow();
+            int aktualnieWybranaLiczaPoziomow = Integer.parseInt(choiceBoxIloscPoziomow.getValue().toString());
+            if (liczbaPoziomowBudynku < aktualnieWybranaLiczaPoziomow) {
+                UtilBudynek.dodajNowePoziomy(aktualnieWybranaLiczaPoziomow, liczbaPoziomowBudynku);
+            }
+            if (liczbaPoziomowBudynku > aktualnieWybranaLiczaPoziomow) {
+                UtilBudynek.usunPoziomy(aktualnieWybranaLiczaPoziomow, liczbaPoziomowBudynku);
+            }
+            observableListaPoziomow = UtilBudynek.aktualizujNazwyPoziomow(choiceBoxwybierzPoziom);
+        });
+    }
+
 
     private void inicjalizacjaPrzyciskuDodaniaPlanuPoziomu() {
-        dodajPlan.addEventHandler(MouseEvent.MOUSE_CLICKED, event -> {
+        przyciskDodajPlan.addEventHandler(MouseEvent.MOUSE_CLICKED, event -> {
             FileChooser fileChooser = new FileChooser();
             //dodanie blokady rozszerzen do wyboru plikow
             FileChooser.ExtensionFilter extFilterJPG = new FileChooser.ExtensionFilter("JPG files (*.jpg)", "*.JPG");
@@ -168,42 +164,23 @@ public class DeveloperView implements Initializable {
             File mapaPoziomuFile = fileChooser.showOpenDialog(null);
             if (mapaPoziomuFile != null) {
                 Image image = new Image(mapaPoziomuFile.toURI().toString());
-//                    ImageView iv = new ImageView(image);
-                Budynek.getInstance().getListaPoziomy().stream().filter(o -> o.getNazwa().equals(wybierzPoziom.getValue())).findFirst().get().setMapaPoziomu(image);
-//                    testImage.setImage(Budynek.getInstance().getListaPoziomy().stream().filter(o -> o.getNazwa().equals(wybierzPoziom.getValue())).findFirst().get().getMapaPoziomu());
+                Budynek.getInstance().getListaPoziomy().stream().filter(o -> o.getNazwa().equals(choiceBoxwybierzPoziom.getValue())).findFirst().get().setMapaPoziomu(image);
             }
         });
     }
 
     private void inicjalizacjaPrzyciskDoodajUrzadzenie() {
         przyciskDodajUrzadzenie.addEventHandler(MouseEvent.MOUSE_CLICKED, event -> {
-//            LOGGER.info("czy istnieje lista urzadzen?: " + Budynek.getInstance().getListaPoziomy().get(1).getListaUrzadzen());
-            wyborUrzadzeniaDoEdycji.setVisible(false);//ukrycie pola wyboru urzadzenia do edycji
-            przyciskZapisz.setText("Dodaj urzadzenie");//TODO: internacjonalizacja +
+            ukryjElement(kontenerWyborUrzadzeniaDoEdycji);//ukrycie pola wyboru urzadzenia do edycji
+            przyciskZapisz.setText("Dodaj");//TODO: internacjonalizacja +
             flagaDodajEdytujUrzadzenie = true;
             //TODO: przyszłosćiowo moze dodać czyszczenie pol ktore mozna edytowac
         });
     }
 
     private void inicjalizacjaEdycjiUrzadzenia() {
-        wyborUrzadzeniaDoEdycji.setVisible(true);
+        pokazElement(kontenerWyborUrzadzeniaDoEdycji);
 
-    }
-
-    private boolean sprawdzCzyPoziomMaUrzadzenia() {
-        if (Budynek.getInstance().getListaPoziomy().stream().filter(o -> o.getNazwa().equals(wybierzPoziom.getValue())).findFirst().get().getListaUrzadzen() != null) {
-            //sprawdzenie czy lista urzadzen nie jest pusta
-            if (!Budynek.getInstance().getListaPoziomy().stream().filter(o -> o.getNazwa().equals(wybierzPoziom.getValue())).findFirst().get().getListaUrzadzen().isEmpty()) {
-                przyciskEdytujUrzadzenie.setDisable(false);//odblokowanie mozliwosci edycji urzadzen
-                return true;
-            } else {
-                przyciskEdytujUrzadzenie.setDisable(true);//blookowanie mozliwosci edycji urzadzen
-                return false;
-            }
-        } else {
-            przyciskEdytujUrzadzenie.setDisable(true);//blokowanie mozliwosci edycji urzadzen
-            return false;
-        }
     }
 
     private void inicjalizacjaPrzyciskZapisz() {
@@ -215,39 +192,24 @@ public class DeveloperView implements Initializable {
                 //obliczenie nowego id dla urzadzenia
                 int id;
                 //sparwdzenie czy lista urzadzen jest null
-                int rozmiarListyUrzadzen = sprawdzCzyListaUrzadzenIstnieje(Budynek.getInstance().getListaPoziomy().stream().filter(o -> o.getNazwa().equals(wybierzPoziom.getValue())).findFirst().get().getListaUrzadzen());
+                int rozmiarListyUrzadzen = UtilPoziom.zwrocLiczbeUrzadzenNaPoziomie(Budynek.getInstance().getListaPoziomy().stream().filter(o -> o.getNazwa().equals(choiceBoxwybierzPoziom.getValue())).findFirst().get().getListaUrzadzen(),choiceBoxwybierzPoziom);
                 id = rozmiarListyUrzadzen != 0 ? rozmiarListyUrzadzen + 1 : 1;
-                String nazwaUrzadzenia = editNazwaUrzadzenia.getText();
-                int portUrzadzenia = Integer.parseInt(editPort.getText());//TODO: jezeli to pole zostaje puste aplikacja sie wyjebie
+                String nazwaUrzadzenia = textFieldNazwaUrzadzenia.getText();
+                int portUrzadzenia = Integer.parseInt(textFieldEditPort.getText());//TODO: jezeli to pole zostaje puste aplikacja sie wyjebie
                 //dodanie nowego urzadzenia do listy
-                Urzadzenie urzadzenie = UtilUrzadzenia.utworzUrzadzenie(id, portUrzadzenia, nazwaUrzadzenia, (TypUrzadzenia) wyborTypUrzadzenia.getValue());//utworzenie nowego urzadzenia
-                UtilPoziom.dodajUrzadzenieNaPoziomie(urzadzenie, wybierzPoziom);
-//                UtilPoziom.wyswietlWszytskieUrzadzeniaNaPoziomie(wybierzPoziom);
+                Urzadzenie urzadzenie = UtilUrzadzenia.utworzUrzadzenie(id, portUrzadzenia, nazwaUrzadzenia, (TypUrzadzenia) choiceBoxwyborTypUrzadzenia.getValue());//utworzenie nowego urzadzenia
+                UtilPoziom.dodajUrzadzenieNaPoziomie(urzadzenie, choiceBoxwybierzPoziom);
+                odblokujElement(przyciskEdytujUrzadzenie);
+//                UtilPoziom.wyswietlWszytskieUrzadzeniaNaPoziomie(choiceBoxwybierzPoziom);
+            }else {
+                //edycja urzadzenia
             }
         });
     }
 
     private void inicjalizacjaWyboruTypuUrzadzenia() {
-        wyborTypUrzadzenia.getItems().setAll(FXCollections.observableArrayList(TypUrzadzenia.values()));
+        choiceBoxwyborTypUrzadzenia.getItems().setAll(FXCollections.observableArrayList(TypUrzadzenia.values()));
     }
 
-    private int sprawdzCzyListaUrzadzenIstnieje(List<Urzadzenie> urzadzeniaLista) {
-        if (urzadzeniaLista != null) {
-            if (urzadzeniaLista.isEmpty()) {
-                LOGGER.info("lista urzadzen dla danego poziomu jest pusta");
-                return 0;
-            } else {
-                LOGGER.info("poziom poosiada liste urzadzen");
-                return urzadzeniaLista.size();
-            }
-        } else {
-            LOGGER.info("lista urzadzen dla danego pooziomu jest NULL");
-            UtilPoziom.inicjalizujListeUrzadzen(new ArrayList<>(), wybierzPoziom);
-            return 0;
-        }
-    }
 
-    public int getTempPoziom() {
-        return tempPoziom;
-    }
 }
