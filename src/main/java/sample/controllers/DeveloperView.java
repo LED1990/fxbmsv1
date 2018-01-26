@@ -22,8 +22,6 @@ import sample.utils.UtilUrzadzenia;
 
 import java.io.File;
 import java.net.URL;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.ResourceBundle;
 import java.util.logging.Logger;
 
@@ -35,29 +33,29 @@ public class DeveloperView implements Initializable {
     @FXML
     private ChoiceBox choiceBoxIloscPoziomow;
     @FXML
-    private VBox kontenerPoziom; //kontener w ktorym są opcje dotyczące poziomu
-    @FXML
     private ChoiceBox choiceBoxwybierzPoziom;
     @FXML
-    private TextField textFieldnazwaPoziomu;
+    private ChoiceBox choiceBoxEdytujUrzadzenie;
+    @FXML
+    private ChoiceBox choiceBoxwyborTypUrzadzenia;
+    @FXML
+    private VBox kontenerPoziom; //kontener w ktorym są opcje dotyczące poziomu
+    @FXML
+    private HBox kontenerWyborUrzadzeniaDoEdycji;
     @FXML
     private Button przyciskDodajPlan;
     @FXML
     private Button przyciskDodajUrzadzenie;
     @FXML
-    private ChoiceBox choiceBoxEdytujUrzadzenie;
+    private Button przyciskZapisz;
     @FXML
     private Button przyciskEdytujUrzadzenie;
     @FXML
-    private HBox kontenerWyborUrzadzeniaDoEdycji;
-    @FXML
     private TextField textFieldNazwaUrzadzenia;
     @FXML
+    private TextField textFieldnazwaPoziomu;
+    @FXML
     private TextField textFieldEditPort;
-    @FXML
-    private ChoiceBox choiceBoxwyborTypUrzadzenia;
-    @FXML
-    private Button przyciskZapisz;
 
     private ObservableList observableListaPoziomow;
     private boolean flagaDodajEdytujUrzadzenie;//flaga do wykrywania czy wcisnieto dodaj czy edytuj urzadzenie true-dodaj false-edytuj
@@ -70,10 +68,10 @@ public class DeveloperView implements Initializable {
         inicjalizacjaWyborPoziomu();
         inicjalizacjaPolaEdycjiNazwyPoziomu();
         inicjalizacjaPrzyciskuDodaniaPlanuPoziomu();
-        inicjalizacjaEdycjiUrzadzenia();
         inicjalizacjaPrzyciskDoodajUrzadzenie();
         inicjalizacjaWyboruTypuUrzadzenia();
         inicjalizacjaPrzyciskZapisz();
+        inicjalizacjaPrzyciskEdytujUrzadzenie();
         zablokujElement(przyciskDodajPlan);//blokada przycisku jezeli nie ma wybranego poziomu do edycji
         zablokujElement(przyciskDodajUrzadzenie);//blokada dodawania urzadzenia jezeli poziom nie jest wybrany
         zablokujElement(przyciskEdytujUrzadzenie);//blokada edycji urzadzen jezeli poziom nie jest wybrany
@@ -110,7 +108,7 @@ public class DeveloperView implements Initializable {
                 } else {
                     zablokujElement(przyciskEdytujUrzadzenie);
                 }
-                textFieldnazwaPoziomu.setText(Budynek.getInstance().getListaPoziomy().stream().filter(o -> o.getNazwa().equals(choiceBoxwybierzPoziom.getValue())).findFirst().get().getNazwa());
+                textFieldnazwaPoziomu.setText(UtilPoziom.zwrocNazwePoziomu(choiceBoxwybierzPoziom));
             } else {
                 zablokujElement(przyciskDodajPlan);//blokada przycisku jezeli nie ma wybranego poziomu do edycji
                 zablokujElement(przyciskDodajUrzadzenie);
@@ -125,8 +123,8 @@ public class DeveloperView implements Initializable {
         //dodanie focusa do pola edycji nazwy poziomu
         textFieldnazwaPoziomu.focusedProperty().addListener((observable1, oldValue1, newValue1) -> {
             if (oldValue1) {
-                int poziomDoEdycji = Budynek.getInstance().getListaPoziomy().indexOf(Budynek.getInstance().getListaPoziomy().stream().filter(o -> o.getNazwa().equals(choiceBoxwybierzPoziom.getValue())).findFirst().get());
-                Budynek.getInstance().getListaPoziomy().stream().filter(o -> o.getNazwa().equals(choiceBoxwybierzPoziom.getValue())).findFirst().get().setNazwa(textFieldnazwaPoziomu.getText());//update nazwy poziomy w obiekcie klasy Poziom
+                int poziomDoEdycji = UtilPoziom.zwrocIndexPoziomu(choiceBoxwybierzPoziom);
+                UtilPoziom.zmienNazwePoziomu(choiceBoxwybierzPoziom, textFieldnazwaPoziomu);
                 observableListaPoziomow.set(poziomDoEdycji, textFieldnazwaPoziomu.getText());//update nazw poziomow do edycji
                 choiceBoxwybierzPoziom.setValue(textFieldnazwaPoziomu.getText());//update nazwy w polu wyboru edytowanego poziomu
             }
@@ -151,7 +149,6 @@ public class DeveloperView implements Initializable {
             observableListaPoziomow = UtilBudynek.aktualizujNazwyPoziomow(choiceBoxwybierzPoziom);
         });
     }
-
 
     private void inicjalizacjaPrzyciskuDodaniaPlanuPoziomu() {
         przyciskDodajPlan.addEventHandler(MouseEvent.MOUSE_CLICKED, event -> {
@@ -178,9 +175,19 @@ public class DeveloperView implements Initializable {
         });
     }
 
-    private void inicjalizacjaEdycjiUrzadzenia() {
-        pokazElement(kontenerWyborUrzadzeniaDoEdycji);
+    private void inicjalizacjaPrzyciskEdytujUrzadzenie() {
+        przyciskEdytujUrzadzenie.addEventHandler(MouseEvent.MOUSE_CLICKED, event -> {
+            pokazElement(kontenerWyborUrzadzeniaDoEdycji);
+            flagaDodajEdytujUrzadzenie = false;
+            UtilPoziom.aktualizujNazwyUrzadzenNaPoziomie(choiceBoxwybierzPoziom, choiceBoxEdytujUrzadzenie);
+            przyciskZapisz.setText("Zapisz zmiany");
+        });
+    }
 
+    private void inicjalizacjaChoiceBoxEdytujUrzadzenie() {
+        choiceBoxEdytujUrzadzenie.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
+            //TODO: tutaj trzeba ustawic wszystkie prametry urzadzenia
+        });
     }
 
     private void inicjalizacjaPrzyciskZapisz() {
@@ -189,11 +196,8 @@ public class DeveloperView implements Initializable {
             if (flagaDodajEdytujUrzadzenie) {
                 //dodawanie nowego urzadzenia
                 //TODO: dodać walidacje pól - czy puste id...!!!!!!!!!!!!!
-                //obliczenie nowego id dla urzadzenia
-                int id;
-                //sparwdzenie czy lista urzadzen jest null
-                int rozmiarListyUrzadzen = UtilPoziom.zwrocLiczbeUrzadzenNaPoziomie(Budynek.getInstance().getListaPoziomy().stream().filter(o -> o.getNazwa().equals(choiceBoxwybierzPoziom.getValue())).findFirst().get().getListaUrzadzen(),choiceBoxwybierzPoziom);
-                id = rozmiarListyUrzadzen != 0 ? rozmiarListyUrzadzen + 1 : 1;
+                int rozmiarListyUrzadzen = UtilPoziom.zwrocLiczbeUrzadzenNaPoziomie(choiceBoxwybierzPoziom);
+                int id = rozmiarListyUrzadzen != 0 ? rozmiarListyUrzadzen + 1 : 1;
                 String nazwaUrzadzenia = textFieldNazwaUrzadzenia.getText();
                 int portUrzadzenia = Integer.parseInt(textFieldEditPort.getText());//TODO: jezeli to pole zostaje puste aplikacja sie wyjebie
                 //dodanie nowego urzadzenia do listy
@@ -201,7 +205,7 @@ public class DeveloperView implements Initializable {
                 UtilPoziom.dodajUrzadzenieNaPoziomie(urzadzenie, choiceBoxwybierzPoziom);
                 odblokujElement(przyciskEdytujUrzadzenie);
 //                UtilPoziom.wyswietlWszytskieUrzadzeniaNaPoziomie(choiceBoxwybierzPoziom);
-            }else {
+            } else {
                 //edycja urzadzenia
             }
         });

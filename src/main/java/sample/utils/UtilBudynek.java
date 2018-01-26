@@ -52,13 +52,13 @@ public class UtilBudynek {
         Budynek.getInstance().setLiczbaPoziomow(aktualnieWybranaLiiczbaPoziomow);//aktualizacja liczby poziomow w budynku
     }
 
-    public static ObservableList aktualizujNazwyPoziomow(ChoiceBox choiceBoxwybierzPoziom){
+    public static ObservableList aktualizujNazwyPoziomow(ChoiceBox choiceBoxWybierzPoziom){
         List<String> nazwyPoziomow = new ArrayList<>();
         for (Poziom x : Budynek.getInstance().getListaPoziomy()) {
             nazwyPoziomow.add(x.getNazwa());
         }
         ObservableList observableListaPoziomow = FXCollections.observableArrayList(nazwyPoziomow);
-        choiceBoxwybierzPoziom.setItems(observableListaPoziomow);
+        choiceBoxWybierzPoziom.setItems(observableListaPoziomow);
         return observableListaPoziomow;
     }
 

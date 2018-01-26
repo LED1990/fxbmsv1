@@ -1,6 +1,9 @@
 package sample.utils;
 
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.scene.control.ChoiceBox;
+import javafx.scene.control.TextField;
 import sample.models.Budynek;
 import sample.models.Poziom;
 import sample.models.Urzadzenie;
@@ -15,37 +18,38 @@ import java.util.logging.Logger;
 public class UtilPoziom {
     private static final Logger LOGGER = Logger.getLogger(Poziom.class.getName());
 
-    public static void inicjalizujListeUrzadzen(List<Urzadzenie> listaUrzadzen, ChoiceBox poziom) {
+    public static void inicjalizujListeUrzadzen(List<Urzadzenie> listaUrzadzen, ChoiceBox choiceBoxwybierzPoziom) {
         LOGGER.info("inicjalizacja listy urzadzen");
-        Budynek.getInstance().getListaPoziomy().stream().filter(o -> o.getNazwa().equals(poziom.getValue())).findFirst().get().setListaUrzadzen(listaUrzadzen);
+        Budynek.getInstance().getListaPoziomy().stream().filter(o -> o.getNazwa().equals(choiceBoxwybierzPoziom.getValue())).findFirst().get().setListaUrzadzen(listaUrzadzen);
     }
 
-    public static void dodajUrzadzenieNaPoziomie(Urzadzenie urzadzenie, ChoiceBox poziom) {
+    public static void dodajUrzadzenieNaPoziomie(Urzadzenie urzadzenie, ChoiceBox choiceBoxwybierzPoziom) {
         LOGGER.info("dodanie urzadzenia na danym poziomie");
-        Budynek.getInstance().getListaPoziomy().stream().filter(o -> o.getNazwa().equals(poziom.getValue())).findFirst().get().getListaUrzadzen().add(urzadzenie);
+        zwrocListeUrzadzenNaPoziomie(choiceBoxwybierzPoziom).add(urzadzenie);
     }
 
-    public static void wyswietlWszytskieUrzadzeniaNaPoziomie(ChoiceBox poziom) {
-        LOGGER.info("urzadzenia poziomu " + poziom.getValue().toString());
-        for (Urzadzenie u : Budynek.getInstance().getListaPoziomy().stream().filter(o -> o.getNazwa().equals(poziom.getValue())).findFirst().get().getListaUrzadzen()) {
+    public static void wyswietlWszytskieUrzadzeniaNaPoziomie(ChoiceBox choiceBoxwybierzPoziom) {
+        LOGGER.info("urzadzenia poziomu " + choiceBoxwybierzPoziom.getValue().toString());
+        for (Urzadzenie u : zwrocListeUrzadzenNaPoziomie(choiceBoxwybierzPoziom)) {
             LOGGER.info(u.toString());
         }
     }
 
-    public static boolean sprawdzCzyPoziomMaUrzadzenia(ChoiceBox wybierzPoziom) {
-        if (Budynek.getInstance().getListaPoziomy().stream().filter(o -> o.getNazwa().equals(wybierzPoziom.getValue())).findFirst().get().getListaUrzadzen() != null) {
-            //sprawdzenie czy lista urzadzen nie jest pusta
-            if (!Budynek.getInstance().getListaPoziomy().stream().filter(o -> o.getNazwa().equals(wybierzPoziom.getValue())).findFirst().get().getListaUrzadzen().isEmpty()) {
-                return true;
-            } else {
-                return false;
-            }
-        } else {
-            return false;
+    public static void aktualizujNazwyUrzadzenNaPoziomie(ChoiceBox choiceBoxwybierzPoziom, ChoiceBox choiceBoxEdytujUrzadzenie) {
+        List<String> nazwyUrzadzen = new ArrayList<>();
+        for (Urzadzenie x : zwrocListeUrzadzenNaPoziomie(choiceBoxwybierzPoziom)) {
+            nazwyUrzadzen.add(x.getNazwa());
         }
+        ObservableList observableNazwyUrzadzen = FXCollections.observableArrayList(nazwyUrzadzen);
+        choiceBoxEdytujUrzadzenie.setItems(observableNazwyUrzadzen);
     }
 
-    public static int zwrocLiczbeUrzadzenNaPoziomie(List<Urzadzenie> urzadzeniaLista, ChoiceBox choiceBoxwybierzPoziom) {
+    public static boolean sprawdzCzyPoziomMaUrzadzenia(ChoiceBox choiceBoxwybierzPoziom) {
+        return zwrocListeUrzadzenNaPoziomie(choiceBoxwybierzPoziom) != null ? !zwrocListeUrzadzenNaPoziomie(choiceBoxwybierzPoziom).isEmpty() : false;
+    }
+
+    public static int zwrocLiczbeUrzadzenNaPoziomie(ChoiceBox choiceBoxwybierzPoziom) {
+        List<Urzadzenie> urzadzeniaLista = zwrocListeUrzadzenNaPoziomie(choiceBoxwybierzPoziom);
         if (urzadzeniaLista != null) {
             if (urzadzeniaLista.isEmpty()) {
                 LOGGER.info("lista urzadzen dla danego poziomu jest pusta");
@@ -59,5 +63,22 @@ public class UtilPoziom {
             UtilPoziom.inicjalizujListeUrzadzen(new ArrayList<>(), choiceBoxwybierzPoziom);
             return 0;
         }
+    }
+
+    public static String zwrocNazwePoziomu(ChoiceBox choiceBoxwybierzPoziom) {
+        return Budynek.getInstance().getListaPoziomy().stream().filter(o -> o.getNazwa().equals(choiceBoxwybierzPoziom.getValue())).findFirst().get().getNazwa();
+    }
+
+    public static int zwrocIndexPoziomu(ChoiceBox choiceBoxwybierzPoziom) {
+        return Budynek.getInstance().getListaPoziomy().indexOf(Budynek.getInstance().getListaPoziomy().stream().filter(o -> o.getNazwa().equals(choiceBoxwybierzPoziom.getValue())).findFirst().get());
+    }
+
+    public static void zmienNazwePoziomu(ChoiceBox choiceBoxwybierzPoziom, TextField textFieldnazwaPoziomu) {
+        Budynek.getInstance().getListaPoziomy().stream().filter(o -> o.getNazwa().equals(choiceBoxwybierzPoziom.getValue())).findFirst().get().setNazwa(textFieldnazwaPoziomu.getText());
+
+    }
+
+    private static List<Urzadzenie> zwrocListeUrzadzenNaPoziomie(ChoiceBox choiceBoxwybierzPoziom) {
+        return Budynek.getInstance().getListaPoziomy().stream().filter(o -> o.getNazwa().equals(choiceBoxwybierzPoziom.getValue())).findFirst().get().getListaUrzadzen();
     }
 }
