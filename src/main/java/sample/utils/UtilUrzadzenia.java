@@ -31,4 +31,16 @@ public class UtilUrzadzenia {
         }
         return urzadzenie;
     }
+
+    public static Urzadzenie zwrocUrzadzeniePoNazwie(ChoiceBox choiceBoxEdytujUrzadzenie, List<Urzadzenie> listaUrzadzenNaPoziomie) {
+        return listaUrzadzenNaPoziomie.stream().filter(o -> o.getNazwa().equals(choiceBoxEdytujUrzadzenie.getValue())).findFirst().get();
+    }
+
+    public static void aktualizujDaneOurzadzeniu(ChoiceBox choiceBoxEdytujUrzadzenie, ChoiceBox choiceBoxwybierzPoziom, String nazwa, int port, TypUrzadzenia typUrzadzenia) {
+        List<Urzadzenie> listaUrzadzen = Budynek.getInstance().getListaPoziomy().stream().filter(o -> o.getNazwa().equals(choiceBoxwybierzPoziom.getValue())).findFirst().get().getListaUrzadzen();
+        Urzadzenie urzadzenie = listaUrzadzen.stream().filter(o -> o.getNazwa().equals(choiceBoxEdytujUrzadzenie.getValue())).findFirst().get();
+        urzadzenie.setNazwa(nazwa);
+        urzadzenie.setPort(port);
+        urzadzenie.setTypUrzadzenia(typUrzadzenia);
+    }
 }

@@ -22,6 +22,7 @@ import sample.utils.UtilUrzadzenia;
 
 import java.io.File;
 import java.net.URL;
+import java.util.List;
 import java.util.ResourceBundle;
 import java.util.logging.Logger;
 
@@ -72,6 +73,7 @@ public class DeveloperView implements Initializable {
         inicjalizacjaWyboruTypuUrzadzenia();
         inicjalizacjaPrzyciskZapisz();
         inicjalizacjaPrzyciskEdytujUrzadzenie();
+        inicjalizacjaChoiceBoxEdytujUrzadzenie();
         zablokujElement(przyciskDodajPlan);//blokada przycisku jezeli nie ma wybranego poziomu do edycji
         zablokujElement(przyciskDodajUrzadzenie);//blokada dodawania urzadzenia jezeli poziom nie jest wybrany
         zablokujElement(przyciskEdytujUrzadzenie);//blokada edycji urzadzen jezeli poziom nie jest wybrany
@@ -187,6 +189,12 @@ public class DeveloperView implements Initializable {
     private void inicjalizacjaChoiceBoxEdytujUrzadzenie() {
         choiceBoxEdytujUrzadzenie.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
             //TODO: tutaj trzeba ustawic wszystkie prametry urzadzenia
+            //pobranie i uzupełnienie danych oo urządzeniu
+            List<Urzadzenie> listaUrzadzenNaPooziomie = UtilPoziom.zwrocListeUrzadzenNaPoziomie(choiceBoxwybierzPoziom);
+            Urzadzenie urzadzenie = UtilUrzadzenia.zwrocUrzadzeniePoNazwie(choiceBoxEdytujUrzadzenie, listaUrzadzenNaPooziomie);
+            textFieldNazwaUrzadzenia.setText(urzadzenie.getNazwa());
+            textFieldEditPort.setText(String.valueOf(urzadzenie.getPort()));
+            choiceBoxwyborTypUrzadzenia.setValue(urzadzenie.getTypUrzadzenia());
         });
     }
 
@@ -207,6 +215,13 @@ public class DeveloperView implements Initializable {
 //                UtilPoziom.wyswietlWszytskieUrzadzeniaNaPoziomie(choiceBoxwybierzPoziom);
             } else {
                 //edycja urzadzenia
+                //TODO: trzeba bedzie dodać walidacje na wypadek pustych pól itd
+                List<Urzadzenie> listaUrzadzenNaPooziomie = UtilPoziom.zwrocListeUrzadzenNaPoziomie(choiceBoxwybierzPoziom);
+                String nazwa = textFieldNazwaUrzadzenia.getText();
+                int port = Integer.parseInt(textFieldEditPort.getText());
+                TypUrzadzenia typUrzadzenia = (TypUrzadzenia) choiceBoxwyborTypUrzadzenia.getValue();
+                UtilUrzadzenia.aktualizujDaneOurzadzeniu(choiceBoxEdytujUrzadzenie, choiceBoxwybierzPoziom, nazwa, port, typUrzadzenia);
+                UtilPoziom.wyswietlWszytskieUrzadzeniaNaPoziomie(choiceBoxwybierzPoziom);
             }
         });
     }

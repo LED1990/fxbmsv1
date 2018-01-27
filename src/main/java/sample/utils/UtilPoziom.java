@@ -78,7 +78,7 @@ public class UtilPoziom {
 
     }
 
-    private static List<Urzadzenie> zwrocListeUrzadzenNaPoziomie(ChoiceBox choiceBoxwybierzPoziom) {
+    public static List<Urzadzenie> zwrocListeUrzadzenNaPoziomie(ChoiceBox choiceBoxwybierzPoziom) {
         return Budynek.getInstance().getListaPoziomy().stream().filter(o -> o.getNazwa().equals(choiceBoxwybierzPoziom.getValue())).findFirst().get().getListaUrzadzen();
     }
 }
