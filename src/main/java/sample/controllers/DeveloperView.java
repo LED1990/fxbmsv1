@@ -19,6 +19,7 @@ import sample.models.Urzadzenie;
 import sample.utils.UtilBudynek;
 import sample.utils.UtilPoziom;
 import sample.utils.UtilUrzadzenia;
+import sample.utils.UtilZapisUstawien;
 
 import java.io.File;
 import java.net.URL;
@@ -63,22 +64,26 @@ public class DeveloperView implements Initializable {
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
+        if (UtilZapisUstawien.sprawdzCzyPlikXmlIstnieje()) {
+            LOGGER.info("informacje o obudynku: " + Budynek.getInstance().toString());
+        } else {
 //        LOGGER.info("aktualna wartość ilosci poziomów: " + choiceBoxIloscPoziomow.getValue());
-        kontenerPoziom.setVisible(choiceBoxIloscPoziomow.getValue() != null);//ukrywanie edycji poziomów az do wybrania ilosci poziomow
-        inicjalizacjaListyPoziomow();//oraz inicjalizacja pola pola wyboru poziomu
-        inicjalizacjaWyborPoziomu();
-        inicjalizacjaPolaEdycjiNazwyPoziomu();
-        inicjalizacjaPrzyciskuDodaniaPlanuPoziomu();
-        inicjalizacjaPrzyciskDoodajUrzadzenie();
-        inicjalizacjaWyboruTypuUrzadzenia();
-        inicjalizacjaPrzyciskZapisz();
-        inicjalizacjaPrzyciskEdytujUrzadzenie();
-        inicjalizacjaChoiceBoxEdytujUrzadzenie();
-        zablokujElement(przyciskDodajPlan);//blokada przycisku jezeli nie ma wybranego poziomu do edycji
-        zablokujElement(przyciskDodajUrzadzenie);//blokada dodawania urzadzenia jezeli poziom nie jest wybrany
-        zablokujElement(przyciskEdytujUrzadzenie);//blokada edycji urzadzen jezeli poziom nie jest wybrany
-        ukryjElement(kontenerWyborUrzadzeniaDoEdycji);//ukrycie okna wyboru urzadzenia do edycji
-        flagaDodajEdytujUrzadzenie = true;
+            kontenerPoziom.setVisible(choiceBoxIloscPoziomow.getValue() != null);//ukrywanie edycji poziomów az do wybrania ilosci poziomow
+            inicjalizacjaListyPoziomow();//oraz inicjalizacja pola pola wyboru poziomu
+            inicjalizacjaWyborPoziomu();
+            inicjalizacjaPolaEdycjiNazwyPoziomu();
+            inicjalizacjaPrzyciskuDodaniaPlanuPoziomu();
+            inicjalizacjaPrzyciskDoodajUrzadzenie();
+            inicjalizacjaWyboruTypuUrzadzenia();
+            inicjalizacjaPrzyciskZapisz();
+            inicjalizacjaPrzyciskEdytujUrzadzenie();
+            inicjalizacjaChoiceBoxEdytujUrzadzenie();
+            zablokujElement(przyciskDodajPlan);//blokada przycisku jezeli nie ma wybranego poziomu do edycji
+            zablokujElement(przyciskDodajUrzadzenie);//blokada dodawania urzadzenia jezeli poziom nie jest wybrany
+            zablokujElement(przyciskEdytujUrzadzenie);//blokada edycji urzadzen jezeli poziom nie jest wybrany
+            ukryjElement(kontenerWyborUrzadzeniaDoEdycji);//ukrycie okna wyboru urzadzenia do edycji
+            flagaDodajEdytujUrzadzenie = true;
+        }
     }
 
     private void zablokujElement(Node element) {
@@ -222,6 +227,8 @@ public class DeveloperView implements Initializable {
                 TypUrzadzenia typUrzadzenia = (TypUrzadzenia) choiceBoxwyborTypUrzadzenia.getValue();
                 UtilUrzadzenia.aktualizujDaneOurzadzeniu(choiceBoxEdytujUrzadzenie, choiceBoxwybierzPoziom, nazwa, port, typUrzadzenia);
                 UtilPoziom.wyswietlWszytskieUrzadzeniaNaPoziomie(choiceBoxwybierzPoziom);
+                UtilZapisUstawien.zapiszZmianyDoJson();
+                UtilZapisUstawien.zapiszZmianyDoXml();
             }
         });
     }
@@ -229,6 +236,4 @@ public class DeveloperView implements Initializable {
     private void inicjalizacjaWyboruTypuUrzadzenia() {
         choiceBoxwyborTypUrzadzenia.getItems().setAll(FXCollections.observableArrayList(TypUrzadzenia.values()));
     }
-
-
 }
